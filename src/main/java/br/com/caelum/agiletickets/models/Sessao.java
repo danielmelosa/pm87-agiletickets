@@ -16,6 +16,11 @@ import org.joda.time.format.DateTimeFormat;
 @Entity
 public class Sessao {
 
+	public static final double INDICADOR_CINCO_PORCENTO_INGRESSOS = 0.05;
+	public static final double INDICADOR_DEZ_PORCENTO_INGRESSOS = 0.10;
+	public static final double INDICADOR_VINTE_PORCENTO_INGRESSOS = 0.20;
+	public static final double INDICADOR_CINQUENTA_PORCENTO_INGRESSOS = 0.50;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -112,5 +117,42 @@ public class Sessao {
 	public BigDecimal getPreco() {
 		return preco;
 	}
+
+	public BigDecimal getPrecoCom20PorcentoDeAumento() {
+		return getPreco().add(
+				getPreco().multiply(BigDecimal.valueOf(INDICADOR_VINTE_PORCENTO_INGRESSOS)));
+	}
+	
+	public BigDecimal getPrecoCom10PorcentoDeAumento() {
+		return getPreco().add(
+				getPreco().multiply(BigDecimal.valueOf(INDICADOR_DEZ_PORCENTO_INGRESSOS)));
+	}
+
+	public boolean has5PorcentoDeIngressosDisponiveisParaVenda() {
+		return getIngressosDisponiveis()
+				/ this.getTotalIngressos().doubleValue() <= INDICADOR_CINCO_PORCENTO_INGRESSOS;
+	}
+
+	public boolean has50PorcentoDeIngressosDisponiveisParaVenda() {
+		return getIngressosDisponiveis() / getTotalIngressos().doubleValue() <= INDICADOR_CINQUENTA_PORCENTO_INGRESSOS;
+	}
+
+	public boolean isTipoDeSessaoCinema() {
+		return this.getEspetaculo().getTipo().equals(TipoDeEspetaculo.CINEMA);
+	}
+
+	public boolean isTipoDeSessaoShow() {
+		return this.getEspetaculo().getTipo().equals(TipoDeEspetaculo.SHOW);
+	}
+
+	public boolean isTipoDeSessaoEspetaculo() {
+		return this.getEspetaculo().getTipo().equals(TipoDeEspetaculo.BALLET);
+	}
+
+	public boolean isTipoDeSessaoOrquestra() {
+		return this.getEspetaculo().getTipo()
+				.equals(TipoDeEspetaculo.ORQUESTRA);
+	}
+
 
 }
