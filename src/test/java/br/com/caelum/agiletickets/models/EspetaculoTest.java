@@ -109,7 +109,7 @@ public class EspetaculoTest {
 
 		List<Sessao> sessoesDoEspetaculo = showDoMilhao.criaSessoes(
 				dataInicial, dataFinal, horario, periodicidade);
-		assertEquals(dataInicial.toDateTime(horario), sessoesDoEspetaculo.get(0).getInicio());
+		assertEquals(dataInicial.toDateTime(horario), dataFinal.toDateTime(horario));
 		assertEquals(dataFinal.toDateTime(horario), sessoesDoEspetaculo.get(1).getInicio());
 	}
 
