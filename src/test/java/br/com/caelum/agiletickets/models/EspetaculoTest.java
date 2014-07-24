@@ -132,7 +132,7 @@ public class EspetaculoTest {
 		Espetaculo showDoMilhao = new Espetaculo();
 
 		LocalDate dataInicial = new LocalDate(2010, 10, 10);
-		LocalDate dataFinal = new LocalDate(2010, 10, 10);
+		LocalDate dataFinal = new LocalDate(2010, 10, 18);
 		LocalTime horario = new LocalTime(22, 00);
 		Periodicidade periodicidade = Periodicidade.SEMANAL;
 
