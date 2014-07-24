@@ -2,6 +2,7 @@ package br.com.caelum.agiletickets.models;
 
 import static com.google.common.collect.Lists.newArrayList;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -13,11 +14,15 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
 @Entity
 public class Espetaculo {
+
+	private static final int DIAS_NA_SEMANA = 7;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -96,8 +101,34 @@ public class Espetaculo {
 	 */
 	public List<Sessao> criaSessoes(LocalDate inicio, LocalDate fim,
 			LocalTime horario, Periodicidade periodicidade) {
-		// ALUNO: Não apague esse metodo. Esse sim será usado no futuro! ;)
-		return null;
+		return criarSessoesParaEspetaculo( inicio, fim, horario, periodicidade );
+	}
+
+	private List<Sessao> criarSessoesParaEspetaculo(LocalDate inicio,
+			LocalDate fim, LocalTime horario, Periodicidade periodicidade) {
+		List<Sessao> novasSessoes = new ArrayList<Sessao>();
+		int quantidadeDeSessoes = calcularQuantidadeDeSessoes(inicio, fim, periodicidade);
+		for (int i = 0; i <= quantidadeDeSessoes; i++) {
+			DateTime dataDaSessao = getNovaDataDaSessao(inicio, horario, i, periodicidade);
+			
+			Sessao sessao = new Sessao();
+			sessao.setInicio(dataDaSessao);
+			sessao.setEspetaculo(this);
+			novasSessoes.add(sessao);
+		}
+		return novasSessoes;
+	}
+
+	private int calcularQuantidadeDeSessoes(LocalDate inicio, LocalDate fim, Periodicidade periodicidade) {
+		if (periodicidade.equals(Periodicidade.DIARIA))
+			return Days.daysBetween(inicio, fim).getDays();
+		return Days.daysBetween(inicio, fim).getDays() / DIAS_NA_SEMANA;
+	}
+
+	private DateTime getNovaDataDaSessao(LocalDate inicio, LocalTime horario, int contadorAtual, Periodicidade periodicidade) {
+		if ( periodicidade.equals(Periodicidade.DIARIA) )
+			return inicio.plusDays(contadorAtual).toDateTime(horario); 
+		return inicio.plusDays(contadorAtual * DIAS_NA_SEMANA).toDateTime(horario);
 	}
 
 	public boolean hasVagas(int qtd, int min) {

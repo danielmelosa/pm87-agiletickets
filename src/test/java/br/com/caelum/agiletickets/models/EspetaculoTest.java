@@ -1,8 +1,11 @@
 package br.com.caelum.agiletickets.models;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
+import java.util.List;
+
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.junit.Test;
 
 public class EspetaculoTest {
@@ -80,5 +83,63 @@ public class EspetaculoTest {
 
 		return sessao;
 	}
-	
+
+	@Test
+	public void deveMontar1SessaoParaEspetaculoComRepeticaoDiariaEDataInicialIgualADataFinal() {
+		Espetaculo showDoMilhao = new Espetaculo();
+
+		LocalDate dataInicial = new LocalDate(2010, 10, 10);
+		LocalDate dataFinal = new LocalDate(2010, 10, 10);
+		LocalTime horario = new LocalTime(22, 00);
+		Periodicidade periodicidade = Periodicidade.DIARIA;
+
+		List<Sessao> sessoesDoEspetaculo = showDoMilhao.criaSessoes(
+				dataInicial, dataFinal, horario, periodicidade);
+		assertEquals(dataInicial.toDateTime(horario), sessoesDoEspetaculo.get(0).getInicio());
+	}
+
+	@Test
+	public void deveMontarNSessoesParaEspetaculoComRepeticaoDiariaEDataFinalMaiorQueDataInicial() {
+		Espetaculo showDoMilhao = new Espetaculo();
+
+		LocalDate dataInicial = new LocalDate(2010, 10, 10);
+		LocalDate dataFinal = new LocalDate(2010, 10, 11);
+		LocalTime horario = new LocalTime(22, 00);
+		Periodicidade periodicidade = Periodicidade.DIARIA;
+
+		List<Sessao> sessoesDoEspetaculo = showDoMilhao.criaSessoes(
+				dataInicial, dataFinal, horario, periodicidade);
+		assertEquals(dataInicial.toDateTime(horario), sessoesDoEspetaculo.get(0).getInicio());
+		assertEquals(dataFinal.toDateTime(horario), sessoesDoEspetaculo.get(1).getInicio());
+	}
+
+	@Test
+	public void deveMontar1SessaoParaEspetaculoComRepeticaoSemanalEMenosDe7DiasDeDiferencaEntreDataInicialEFinal() {
+		Espetaculo showDoMilhao = new Espetaculo();
+
+		LocalDate dataInicial = new LocalDate(2010, 10, 10);
+		LocalDate dataFinal = new LocalDate(2010, 10, 10);
+		LocalTime horario = new LocalTime(22, 00);
+		Periodicidade periodicidade = Periodicidade.SEMANAL;
+
+		List<Sessao> sessoesDoEspetaculo = showDoMilhao.criaSessoes(
+				dataInicial, dataFinal, horario, periodicidade);
+		assertEquals(dataInicial.toDateTime(horario), sessoesDoEspetaculo.get(0).getInicio());
+	}
+
+	@Test
+	public void deveMontarNSessoesParaEspetaculoComRepeticaoSemanalEMaisDe7DiasDeDiferencaEntreDataInicialEFinal() {
+		Espetaculo showDoMilhao = new Espetaculo();
+
+		LocalDate dataInicial = new LocalDate(2010, 10, 10);
+		LocalDate dataFinal = new LocalDate(2010, 10, 18);
+		LocalTime horario = new LocalTime(22, 00);
+		Periodicidade periodicidade = Periodicidade.SEMANAL;
+
+		List<Sessao> sessoesDoEspetaculo = showDoMilhao.criaSessoes(
+				dataInicial, dataFinal, horario, periodicidade);
+		assertEquals(dataInicial.toDateTime(horario), sessoesDoEspetaculo.get(0).getInicio());
+		assertEquals(dataInicial.plusDays(7).toDateTime(horario), sessoesDoEspetaculo.get(1).getInicio());
+	}
+
 }
